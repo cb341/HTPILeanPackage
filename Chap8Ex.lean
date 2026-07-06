@@ -3,6 +3,18 @@ namespace HTPI.Exercises
 
 open Classical
 
+/- Exercises from Chapter 6 that are useful for solutions in this chapter -/
+
+theorem Exercise_6_1_16a2 :
+    ∀ (n : Nat), ¬(nat_even n ∧ nat_odd n) := sorry
+
+theorem div_mod_char (m n q r : Nat)
+    (h1 : n = m * q + r) (h2 : r < m) : q = n / m ∧ r = n % m := sorry
+
+theorem Like_Exercise_6_2_16 {A : Type} (f : A → A)
+    (h : one_to_one f) : ∀ (n : Nat) (B : Set A), numElts B n →
+    closed f B → ∀ y ∈ B, ∃ x ∈ B, f x = y := sorry
+
 /- Section 8.1 -/
 -- 1.
 --Hint:  Use Exercise_6_1_16a2 from the exercises of Section 6.1
