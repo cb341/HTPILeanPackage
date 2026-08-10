@@ -914,6 +914,7 @@ lemma cc_neg_zero_iff_cc_zero (m : Nat) (a : Int) :
 
 lemma cc_mod_0 (a : Int) : [a]_0 = a := by rfl
 
+attribute [local implicit_reducible] ZMod  --needed for next lemma
 lemma cc_nat_zero_iff_dvd (m k : Nat) : [k]_m = [0]_m ↔ m ∣ k :=
   match m with
     | 0 => by

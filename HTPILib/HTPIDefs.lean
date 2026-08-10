@@ -6,8 +6,8 @@ import Mathlib.Tactic
 macro "ring" : tactic =>
   `(tactic| first | ring1 | ring_nf)
 
-def Iff.ltr {p q : Prop} (h : p ↔ q) := h.mp
-def Iff.rtl {p q : Prop} (h : p ↔ q) := h.mpr
+theorem Iff.ltr {p q : Prop} (h : p ↔ q) : p → q := h.mp
+theorem Iff.rtl {p q : Prop} (h : p ↔ q) : q → p := h.mpr
 
 --Make sure Lean understands {x} and ∅ as Sets, not Finsets
 attribute [default_instance] Set.instSingletonSet
@@ -44,7 +44,9 @@ theorem not_imp_iff_not_and {p q : Prop} : ¬ (q → p) ↔ ¬ p ∧ q := by
 theorem not_not_iff {p q : Prop} : ¬(¬p ↔ q) ↔ (p ↔ q) := by
   rw [not_iff, Classical.not_not]
 
+@[implicit_reducible]
 def Pred (U : Type) : Type := U → Prop
+@[implicit_reducible]
 def BinRel (U : Type) : Type := Rel U U
 
 --Definitions of tactics
@@ -260,6 +262,7 @@ If rep = true, unfold repeatedly.
 Let whnfCore handle everything except unfolding of constants.
 Do all normalization up to first unfolding of a definition; on next call do that unfolding
 -/
+--*** Maybe trying to rewrite with Set.mem_iff_mem will do this?
 def fixElt (e : Expr) (doFix : Bool) : TacticM Expr := do
   if doFix then
     match e with  --if e is "set elt", change to "elt ∈ set"
