@@ -198,12 +198,36 @@ theorem Exercise_3_3_16 (U : Type) (B : Set U)
   define at fsubpa
   define at xinsomef
 
+  obtain (A : Set U) (ainfandxina : A ∈ F ∧ x ∈ A) from xinsomef
+  have ainf : A ∈ F := ainfandxina.left
+  have xina : x ∈ A := ainfandxina.right
+
+  have ainpb : A ∈ 𝒫 B := fsubpa ainf
+  define at ainpb
+  show x ∈ B from ainpb xina
   done
 
 -- 5.
 theorem Exercise_3_3_17 (U : Type) (F G : Set (Set U))
-    (h1 : ∀ (A : Set U), A ∈ F → ∀ (B : Set U), B ∈ G → A ⊆ B) :
+    (master : ∀ (A : Set U), A ∈ F → ∀ (B : Set U), B ∈ G → A ⊆ B) :
     ⋃₀ F ⊆ ⋂₀ G := by
+
+
+  define
+  intro x
+  assume xinsomef
+  define at xinsomef
+  obtain (A : Set U) (ainfandxina : A ∈ F ∧ x ∈ A) from xinsomef
+  define
+
+  intro B
+  assume bing
+
+  -- have asubb : A ⊆ B := master ainfandxina.left bing
+  have asubb : A ⊆ B := master A ainfandxina.left B bing
+
+  define at asubb
+  show x ∈ B from asubb ainfandxina.right 
 
   done
 
