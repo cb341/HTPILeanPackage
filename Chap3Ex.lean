@@ -180,12 +180,23 @@ theorem Exercise_3_3_12 (U : Type)
   have ainf : A ∈ F := h4.left
 
   have aing : A ∈ G := fsubg ainf
+  have xina : x ∈ A := h4.right
+
   -- have aing : a ∈ G := fsubg 
+  apply Exists.intro A _
+  show A ∈ G ∧ x ∈ A from And.intro aing xina
   done
 
 -- 4.
 theorem Exercise_3_3_16 (U : Type) (B : Set U)
     (F : Set (Set U)) : F ⊆ 𝒫 B → ⋃₀ F ⊆ B := by
+
+  assume fsubpa
+  define
+  intro x
+  assume xinsomef
+  define at fsubpa
+  define at xinsomef
 
   done
 
