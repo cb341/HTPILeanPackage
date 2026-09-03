@@ -1,29 +1,63 @@
 import HTPILib.Chap3
 namespace HTPI.Exercises
 
+theorem Example_3_2_4_v2 (P Q R : Prop)
+    (h : P → (Q → R)) : ¬R → (P → ¬Q) := by
+  assume h_nr
+  assume h_p
+  assume h_q
+  have h_qr : Q → R := h h_p
+  have h_r : R := h_qr h_q
+  show False from h_nr h_r
+  done
+
+theorem Example_3_2_4_v3 (P Q R : Prop)
+    (h : P → (Q → R)) : ¬R → (P → ¬Q) := by
+  assume nr
+  assume p
+  by_contra E
+  contradict nr
+  have qr : Q → R := h p
+  show R from qr E
+
 /- Sections 3.1 and 3.2 -/
 -- 1.
 theorem Exercise_3_2_1a (P Q R : Prop)
     (h1 : P → Q) (h2 : Q → R) : P → R := by
-
+  assume h_p
+  have h_q : Q := h1 h_p
+  show R from h2 h_q
   done
 
 -- 2.
 theorem Exercise_3_2_1b (P Q R : Prop)
-    (h1 : ¬R → (P → ¬Q)) : P → (Q → R) := by
+    (nr_p_nq : ¬R → (P → ¬Q)) : P → (Q → R) := by
+  assume p
+  assume q
+  by_contra nr
+  contradict q
 
+  have h_pnq : P → ¬Q := nr_p_nq nr
+  show ¬Q from h_pnq p
   done
 
 -- 3.
 theorem Exercise_3_2_2a (P Q R : Prop)
     (h1 : P → Q) (h2 : R → ¬Q) : P → ¬R := by
-
+  assume hp
+  have q : Q := h1 hp
+  by_contra nr
+  contradict q
+  -- show ¬Q := h2 nr
+  apply h2 nr
   done
 
 -- 4.
 theorem Exercise_3_2_2b (P Q : Prop)
     (h1 : P) : Q → ¬(Q → ¬P) := by
-
+  assume q
+  conditional
+  show (Q∧P) from And.intro q h1
   done
 
 /- Section 3.3 -/
@@ -31,31 +65,69 @@ theorem Exercise_3_2_2b (P Q : Prop)
 theorem Exercise_3_3_1
     (U : Type) (P Q : Pred U) (h1 : ∃ (x : U), P x → Q x) :
     (∀ (x : U), P x) → ∃ (x : U), Q x := by
-
+  assume h
+  obtain (a : U) (hpq : P a → Q a) from h1
+  have apx : P a := h a
+  have qa : Q a := hpq apx
+  -- show ∃ (u : U), Q u := qa
+  apply Exists.intro a _
+  show Q a := qa
   done
 
 -- 2.
 theorem Exercise_3_3_8 (U : Type) (F : Set (Set U)) (A : Set U)
     (h1 : A ∈ F) : A ⊆ ⋃₀ F := by
-
+  define
+  intro u
+  assume f
+  define
+  apply Exists.intro A _
+  show (A∈ F∧ u ∈ A) from And.intro h1 f
   done
 
 -- 3.
 theorem Exercise_3_3_9 (U : Type) (F : Set (Set U)) (A : Set U)
     (h1 : A ∈ F) : ⋂₀ F ⊆ A := by
-
+  define
+  intro x
+  assume h
+  define at h
+  have hxa : A ∈ F → x ∈ A := h A
+  have xa : x ∈ A := hxa h1
+  show x∈A := xa
   done
 
 -- 4.
 theorem Exercise_3_3_10 (U : Type) (B : Set U) (F : Set (Set U))
     (h1 : ∀ (A : Set U), A ∈ F → B ⊆ A) : B ⊆ ⋂₀ F := by
-
+  define
+  intro x
+  assume x_in_b
+  define
+  intro A
+  assume a_in_f
+  have f_b_sub_a : A ∈ F → B ⊆ A := h1 A
+  have b_sub_a : B ⊆ A := f_b_sub_a a_in_f
+  define at b_sub_a
+  have x_in_a : x ∈ A := b_sub_a x_in_b
+  show x ∈ A from x_in_a
   done
 
 -- 5.
 theorem Exercise_3_3_13 (U : Type)
     (F G : Set (Set U)) : F ⊆ G → ⋂₀ G ⊆ ⋂₀ F := by
-
+  assume f_sub_g
+  define
+  intro x
+  assume xinsomeg
+  define
+  define at xinsomeg
+  intro A
+  assume ainf
+  define at f_sub_g
+  have a_in_g := f_sub_g ainf
+  have fxina : A ∈ G → x ∈ A := xinsomeg A
+  show x∈A from fxina a_in_g
   done
 
 /- Section 3.4 -/
@@ -63,11 +135,32 @@ theorem Exercise_3_3_13 (U : Type)
 theorem Exercise_3_4_2 (U : Type) (A B C : Set U)
     (h1 : A ⊆ B) (h2 : A ⊆ C) : A ⊆ B ∩ C := by
 
+  define
+  intro x
+  assume xina
+  define
+  define at h1
+  define at h2
+  have xinb : x ∈ B := h1 xina
+  have xinc : x ∈ C := h2 xina
+  show x ∈ B ∧ x ∈ C from And.intro xinb xinc
   done
 
 -- 2.
 theorem Exercise_3_4_4 (U : Type) (A B C : Set U)
     (h1 : A ⊆ B) (h2 : A ⊈ C) : B ⊈ C := by
+
+  by_contra h3
+
+  define at h1
+  define at h2
+  define at h3
+
+  contradict h2
+  intro x
+  assume xina
+  have xinb : x ∈ B := h1 xina
+  show x ∈ C := h3 xinb
 
   done
 
@@ -75,6 +168,19 @@ theorem Exercise_3_4_4 (U : Type) (A B C : Set U)
 theorem Exercise_3_3_12 (U : Type)
     (F G : Set (Set U)) : F ⊆ G → ⋃₀ F ⊆ ⋃₀ G := by
 
+  assume fsubg
+  define
+  intro x
+  assume xinsomeg 
+  define
+  define at fsubg
+  define at xinsomeg
+
+  obtain (A : Set U) (h4 : A ∈ F ∧ x ∈ A) from xinsomeg
+  have ainf : A ∈ F := h4.left
+
+  have aing : A ∈ G := fsubg ainf
+  -- have aing : a ∈ G := fsubg 
   done
 
 -- 4.
